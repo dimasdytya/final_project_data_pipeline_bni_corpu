@@ -4,6 +4,21 @@ Repo ini berisi materi dan hands-on project **ETL Pipeline dengan Apache Airflow
 
 ---
 
+## Persiapan Awal: Fork Repo Ini
+
+> Lakukan fork agar punya salinan repo di akun GitHub masing-masing. Semua perubahan dan progress disimpan di fork milik sendiri.
+
+### Langkah Fork
+
+1. Buka halaman repo: [https://github.com/saipulrx/final_project_data_pipeline_bni_corpu](https://github.com/saipulrx/final_project_data_pipeline_bni_corpu)
+2. Klik tombol **`Fork`** di pojok kanan atas
+3. Pilih akun GitHub pribadi sebagai destination
+4. Klik **`Create fork`**
+
+Setelah fork berhasil, semua langkah selanjutnya dilakukan dari repo hasil fork di akun masing-masing (bukan repo asli).
+
+---
+
 ## Struktur Repo
 
 ```
@@ -31,7 +46,7 @@ Repo ini berisi materi dan hands-on project **ETL Pipeline dengan Apache Airflow
 
 ### 1. Buka Codespace
 
-Di halaman repo GitHub, klik tombol **`Code`** → tab **`Codespaces`** → **`Create codespace on main`**.
+Di halaman **repo fork milik Anda**, klik tombol **`Code`** → tab **`Codespaces`** → **`Create codespace on main`**.
 
 Tunggu hingga environment selesai di-setup (sekitar 1-2 menit).
 
@@ -120,8 +135,8 @@ Klik **Save**.
 ### Langkah
 
 ```bash
-# 1. Clone repo
-git clone https://github.com/saipulrx/final_project_data_pipeline_bni_corpu.git
+# 1. Clone repo fork milik Anda (ganti YOUR_USERNAME)
+git clone https://github.com/YOUR_USERNAME/final_project_data_pipeline_bni_corpu.git
 cd final_project_data_pipeline_bni_corpu
 
 # 2. Setup env
