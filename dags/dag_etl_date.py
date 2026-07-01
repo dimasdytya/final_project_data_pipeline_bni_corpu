@@ -1,13 +1,14 @@
 """
-dag_etl_acounts.py
-===================
+dag_etl_date.py
+===============
 
-ETL Pipeline:
-acounts.csv
+ETL Pipeline
+
+dim_date.csv
         ↓
-stg_acounts
+stg_date
         ↓
-dim_acounts
+dim_date
 """
 
 import os
@@ -30,49 +31,63 @@ SOURCE_FILE = os.path.join(
     "..",
     "include",
     "dataset",
-    "accounts.csv",
+    "dim_date.csv",
 )
 
 DDL_STATEMENTS = """
-CREATE TABLE IF NOT EXISTS stg_accounts (
-    account_id      INTEGER,
-    account_no      VARCHAR(20),
-    account_type    VARCHAR(20),
-    product_name    VARCHAR(100),
-    currency        VARCHAR(10),
-    open_date       VARCHAR(20),
-    close_date      VARCHAR(20),
-    status          VARCHAR(20),
-    interest_rate   NUMERIC(5,2),
-    customer_id     INTEGER,
-    branch_id       INTEGER
+DROP TABLE IF EXISTS stg_date CASCADE;
+DROP TABLE IF EXISTS dim_date CASCADE;
+
+CREATE TABLE stg_date (
+
+    date_id         INTEGER,
+    full_date       VARCHAR(20),
+    year            INTEGER,
+    quarter         INTEGER,
+    month           INTEGER,
+    month_name      VARCHAR(20),
+    week_of_year    INTEGER,
+    day_of_month    INTEGER,
+    day_of_week     INTEGER,
+    day_name        VARCHAR(20),
+    is_weekend      BOOLEAN,
+    is_holiday      BOOLEAN
+
 );
 
-CREATE TABLE IF NOT EXISTS dim_accounts (
-    account_id          INTEGER PRIMARY KEY,
-    account_no          VARCHAR(20),
-    account_type        VARCHAR(20),
-    product_name        VARCHAR(100),
-    currency            VARCHAR(10),
-    open_date           DATE,
-    close_date          DATE,
-    status              VARCHAR(20),
-    interest_rate       NUMERIC(5,2),
-    customer_id         INTEGER,
-    branch_id           INTEGER,
-    account_age_years   INTEGER,
-    is_closed           BOOLEAN,
-    etl_loaded_at       TIMESTAMP DEFAULT NOW()
+CREATE TABLE dim_date (
+
+    date_id         INTEGER PRIMARY KEY,
+
+    full_date       DATE,
+
+    year            INTEGER,
+    quarter         INTEGER,
+    month           INTEGER,
+    month_name      VARCHAR(20),
+
+    week_of_year    INTEGER,
+
+    day_of_month    INTEGER,
+    day_of_week     INTEGER,
+    day_name        VARCHAR(20),
+
+    is_weekend      BOOLEAN,
+    is_holiday      BOOLEAN,
+
+    etl_loaded_at   TIMESTAMP DEFAULT NOW()
+
 );
 """
+
 
 # -----------------------------------------------------------------------------
 # DAG
 # -----------------------------------------------------------------------------
 
 @dag(
-    dag_id="dag_etl_accounts",
-    description="ETL accounts.csv → stg_accounts → dim_accounts",
+    dag_id="dag_etl_date",
+    description="ETL dim_date.csv → stg_date → dim_date",
     start_date=datetime(2025, 1, 1),
     schedule=None,
     catchup=False,
@@ -82,11 +97,11 @@ CREATE TABLE IF NOT EXISTS dim_accounts (
         "retry_delay": timedelta(minutes=5),
         "email_on_failure": False,
     },
-    tags=["etl", "accounts", "postgresql"],
-    template_searchpath=["/opt/airflow/include/sql/accounts"],
+    tags=["etl", "date", "dimension"],
+    template_searchpath=["/opt/airflow/include/sql/date"],
 )
 
-def dag_etl_accounts():
+def dag_etl_date():
 
     # -------------------------------------------------------------------------
     # Create Tables
@@ -117,10 +132,10 @@ def dag_etl_accounts():
         df = pd.read_csv(SOURCE_FILE)
 
         with engine.begin() as connection:
-            connection.execute(text("TRUNCATE TABLE stg_accounts"))
+            connection.execute(text("TRUNCATE TABLE stg_date"))
 
         df.to_sql(
-            name="stg_accounts",
+            name="stg_date",
             con=engine,
             if_exists="append",
             index=False,
@@ -142,11 +157,7 @@ def dag_etl_accounts():
         sql="01_transform.sql",
     )
 
-    # -------------------------------------------------------------------------
-    # Dependency
-    # -------------------------------------------------------------------------
-
     create_tables >> extract_load() >> transform
 
 
-dag_etl_accounts()
+dag_etl_date()
