@@ -23,7 +23,7 @@ from airflow.decorators import dag, task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 
 # ─── Konstanta ────────────────────────────────────────────────────────────────
-CONN_ID     = "neondb_postgres"
+CONN_ID     = "learning_etl"
 SOURCE_FILE = os.path.join(
     os.path.dirname(__file__), "..", "include", "dataset", "churn.csv"
 )

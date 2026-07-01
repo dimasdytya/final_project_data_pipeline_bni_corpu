@@ -1,7 +1,7 @@
 """
 dag_etl_customers.py
 =====================
-ETL pipeline: customers.csv → stg_customers → dim_customers
+ETL pipeline: customers.csv → stg_customers → dim_customers 
 
 Task flow:
     create_tables  (SQLExecuteQueryOperator) : DDL stg_customers & dim_customers
@@ -23,7 +23,7 @@ from airflow.decorators import dag, task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 
 # ─── Konstanta ────────────────────────────────────────────────────────────────
-CONN_ID     = "neondb_postgres" # <-- ganti dengan koneksi database yang sudah dibuat di airflow
+CONN_ID     = "learning_etl" # <-- ganti dengan koneksi database yang sudah dibuat di airflow
 SOURCE_FILE = os.path.join(
     os.path.dirname(__file__), "..", "include", "dataset", "customers.csv"
 )
